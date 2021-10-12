@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.20)
 
 project(Detours CXX)
 set(Detours_VERSION 4.0.1)
@@ -38,8 +38,6 @@ target_compile_definitions(detours PRIVATE
   _WIN32_WINNT=0x501
   )
 
-#target_link_libraries(detours PRIVATE libcmt)
-
 set(DETOURS_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/include/)
 
 foreach(f IN LISTS DETOURS_HEADERS)
@@ -47,22 +45,63 @@ foreach(f IN LISTS DETOURS_HEADERS)
   configure_file(${f} ${DETOURS_INCLUDE_DIR}/detours/${header} COPYONLY)
 endforeach()
 
-set_target_properties(detours PROPERTIES
-  INTERFACE_INCLUDE_DIRECTORIES ${DETOURS_INCLUDE_DIR})
+# set_target_properties(detours PROPERTIES
+#   INTERFACE_INCLUDE_DIRECTORIES ${DETOURS_INCLUDE_DIR})
 
-export(TARGETS detours NAMESPACE Detours:: FILE ${PROJECT_BINARY_DIR}/DetoursTargets.cmake)
+# target_include_directories(fmt PUBLIC
+#   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
+# export(TARGETS detours NAMESPACE Detours:: FILE ${PROJECT_BINARY_DIR}/DetoursTargets.cmake)
+
+# include(CMakePackageConfigHelpers)
+# write_basic_package_version_file(
+#   "${CMAKE_CURRENT_BINARY_DIR}/DetoursConfigVersion.cmake.in"
+#   VERSION ${Detours_VERSION}
+#   COMPATIBILITY AnyNewerVersion
+#   )
+
+# configure_file(
+#   "${CMAKE_CURRENT_BINARY_DIR}/DetoursConfigVersion.cmake.in"
+#   "${PROJECT_BINARY_DIR}/DetoursConfigVersion.cmake" @ONLY)
+
+# configure_file(
+#   DetoursConfig.cmake.in
+#   "${PROJECT_BINARY_DIR}/DetoursConfig.cmake" @ONLY)
+
+
+## INSTALL
+include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
+
+install(
+  TARGETS detours
+  EXPORT DetoursInstallTargets
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib)
+
+install(
+  FILES ${DETOURS_HEADERS}
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/detours)
+
+set(DETOURS_INSTALL_INCLUDE_DIR ${CMAKE_INSTALL_INCLUDEDIR}/detours)
+
+target_include_directories(detours PUBLIC
+  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+
+install(EXPORT DetoursInstallTargets NAMESPACE Detours:: DESTINATION ${CMAKE_INSTALL_PREFIX}/share)
+
 write_basic_package_version_file(
-  "${CMAKE_CURRENT_BINARY_DIR}/DetoursConfigVersion.cmake.in"
+  "${PROJECT_BINARY_DIR}/InstallDetoursConfigVersion.cmake.in"
   VERSION ${Detours_VERSION}
   COMPATIBILITY AnyNewerVersion
   )
 
 configure_file(
-  "${CMAKE_CURRENT_BINARY_DIR}/DetoursConfigVersion.cmake.in"
+  "${PROJECT_BINARY_DIR}/InstallDetoursConfigVersion.cmake.in"
   "${PROJECT_BINARY_DIR}/DetoursConfigVersion.cmake" @ONLY)
 
 configure_file(
-  DetoursConfig.cmake.in
+  cmake/DetoursConfig.cmake.in
   "${PROJECT_BINARY_DIR}/DetoursConfig.cmake" @ONLY)
+
+install(FILES ${PROJECT_BINARY_DIR}/DetoursConfig.cmake ${PROJECT_BINARY_DIR}/DetoursConfigVersion.cmake DESTINATION ${CMAKE_INSTALL_DATADIR})

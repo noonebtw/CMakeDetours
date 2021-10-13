@@ -1,0 +1,11 @@
+get_filename_component(DETOURS_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+set(DETOURS_INCLUDE_DIR "@DETOURS_INSTALL_INCLUDE_DIR@")
+#cmake_path(GET ${DETOURS_CMAKE_DIR} PARENT_PATH DETOURS_INSTALL_DIR)
+
+# Our library dependencies (contains definitions for IMPORTED targets)
+if(NOT TARGET detours)
+  include("${DETOURS_CMAKE_DIR}/DetoursInstallTargets.cmake")
+endif()
+
+
+set(DETOURS_LIBS Detours::detours)

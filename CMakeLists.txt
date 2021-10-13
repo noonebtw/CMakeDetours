@@ -6,8 +6,8 @@ set(Detours_VERSION 4.0.1)
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
 
-set(DETOURS_ROOT_DIR ${CMAKE_SOURCE_DIR}/Detours)
-set(DETOURS_SOURCE_DIR ${CMAKE_SOURCE_DIR}/Detours/src)
+set(DETOURS_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Detours)
+set(DETOURS_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Detours/src)
 
 set(DETOURS_HEADERS
   ${DETOURS_SOURCE_DIR}/detours.h
@@ -86,22 +86,23 @@ install(
 set(DETOURS_INSTALL_INCLUDE_DIR ${CMAKE_INSTALL_INCLUDEDIR}/detours)
 
 target_include_directories(detours PUBLIC
+  $<BUILD_INTERFACE:${DETOURS_INCLUDE_DIR}>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 install(EXPORT DetoursInstallTargets NAMESPACE Detours:: DESTINATION ${CMAKE_INSTALL_PREFIX}/share)
 
 write_basic_package_version_file(
-  "${PROJECT_BINARY_DIR}/InstallDetoursConfigVersion.cmake.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/InstallDetoursConfigVersion.cmake.in"
   VERSION ${Detours_VERSION}
   COMPATIBILITY AnyNewerVersion
   )
 
 configure_file(
-  "${PROJECT_BINARY_DIR}/InstallDetoursConfigVersion.cmake.in"
-  "${PROJECT_BINARY_DIR}/DetoursConfigVersion.cmake" @ONLY)
+  "${CMAKE_CURRENT_BINARY_DIR}/InstallDetoursConfigVersion.cmake.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/DetoursConfigVersion.cmake" @ONLY)
 
 configure_file(
   cmake/DetoursConfig.cmake.in
-  "${PROJECT_BINARY_DIR}/DetoursConfig.cmake" @ONLY)
+  "${CMAKE_CURRENT_BINARY_DIR}/DetoursConfig.cmake" @ONLY)
 
-install(FILES ${PROJECT_BINARY_DIR}/DetoursConfig.cmake ${PROJECT_BINARY_DIR}/DetoursConfigVersion.cmake DESTINATION ${CMAKE_INSTALL_DATADIR})
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/DetoursConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/DetoursConfigVersion.cmake DESTINATION ${CMAKE_INSTALL_DATADIR})

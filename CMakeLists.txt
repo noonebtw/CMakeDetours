@@ -32,6 +32,7 @@ set_property(
   APPEND PROPERTY HEADER_FILE_ONLY true)
 
 add_library(detours STATIC ${DETOURS_HEADERS} ${DETOURS_SOURCE_FILES})
+add_library(Detours::detours ALIAS detours)
 
 target_compile_definitions(detours PRIVATE
   WIN32_LEAN_AND_MEAN
@@ -51,7 +52,7 @@ endforeach()
 # target_include_directories(fmt PUBLIC
 #   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
-# export(TARGETS detours NAMESPACE Detours:: FILE ${PROJECT_BINARY_DIR}/DetoursTargets.cmake)
+export(TARGETS detours NAMESPACE Detours:: FILE ${CMAKE_CURRENT_BINARY_DIR}/DetoursTargets.cmake)
 
 # include(CMakePackageConfigHelpers)
 # write_basic_package_version_file(
